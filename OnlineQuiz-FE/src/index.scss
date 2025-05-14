@@ -1,0 +1,141 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@font-face {
+  font-family: "SFMono-Regular";
+  src: url("./assets/fonts/SFMono-Regular.otf") format("opentype");
+  font-weight: normal;
+  font-style: normal;
+}
+
+@layer base {
+
+  * {
+    &::-webkit-scrollbar {
+			@apply w-[6px] h-[6px];
+			-webkit-appearance: none;
+		}
+		&::-webkit-scrollbar-track {
+			@apply bg-transparent;
+		}
+		&::-webkit-scrollbar-thumb {
+			@apply bg-icon bg-opacity-70 rounded;
+		}
+  }
+
+  html,
+  body {
+    @apply h-full text-base font-body;
+    text-rendering: optimizeLegibility;
+		-webkit-font-smoothing: antialiased;
+  }
+  h1 {
+    @apply text-xl font-bold;
+  }
+
+  h2 {
+    @apply text-lg font-bold;
+  }
+
+  h3 {
+    @apply text-base font-bold;
+  }
+
+  span, p {
+    @apply text-sm font-medium;
+  }
+
+  kbd,
+  code {
+    @apply font-mono font-medium text-sm bg-gray-300 rounded p-1 text-icon;
+    box-decoration-break: clone;
+  }
+
+  .app-wrapper {
+    @apply flex flex-1 overflow-hidden;
+    transition: all 0.5s cubic-bezier(0.685, 0.0473, 0.346, 1);
+  }
+  .app-main {
+    @apply relative flex flex-col flex-1 min-w-0 min-h-screen;
+  }
+  .app-content {
+    @apply flex flex-col flex-1 p-0;
+    transition: all 0.5s cubic-bezier(0.685, 0.0473, 0.346, 1);
+  }
+  .app-content--inner {
+    @apply flex flex-1 p-4;
+  }
+}
+/* Editor */
+.ProseMirror {
+  color: #3b3e66;
+  margin-top: 40px;
+  padding: 8px;
+  border-radius: 6px;
+  width: 100%;
+  height: 100%;
+  min-height: 160px;
+  max-height: 300px;
+  overflow-y: auto;
+  &[contenteditable='false'] {
+    font-weight: inherit;
+    margin: unset;
+    padding: unset;
+    border: none;
+    border-radius: unset;
+  }
+
+}
+
+.tiptap .is-editor-empty:first-child::before {
+  font-size: 14px;
+  color: #adb5bd;
+  content: attr(data-placeholder);
+  float: left;
+  height: 0;
+  pointer-events: none;
+}
+
+.editor-mini .ProseMirror {
+  padding-top: 8px;
+}
+
+.ProseMirror-focused {
+  border-color: #d1d2de;
+  outline: none;
+}
+
+.ProseMirror > * + * {
+  margin-top: 16px;
+}
+
+.toolbar-button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 30px;
+  padding: 0;
+  margin: 0;
+  border: 0;
+  border-radius: 4px;
+  background: transparent;
+  color: #3b3e66;
+  white-space: nowrap;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+.toolbar-button:hover,
+.toolbar-button.active {
+  background-color: #54b862;
+  color: white;
+}
+.toolbar-button:disabled:hover,
+.toolbar-button:disabled {
+  cursor: unset;
+  background: transparent;
+  color: #959da7;
+}
