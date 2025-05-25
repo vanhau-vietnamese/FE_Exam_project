@@ -13,6 +13,7 @@ function Select({
   icon,
   ...rest
 }) {
+  console.log(options, 'options');
   return (
     <div className={`w-full ${className}`}>
       <div className="flex items-center justify-between">

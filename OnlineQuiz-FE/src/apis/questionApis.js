@@ -1,4 +1,6 @@
+import { useQueryEnhancer } from '~/hooks/core/useRequestProcessor';
 import { axiosClient } from './axiosClient';
+import { QUERY_KEYS } from '~/constants/query';
 
 export const getQuestions = async () => await axiosClient.get('/question/');
 
@@ -13,3 +15,14 @@ export const deleteQuestion = async (id) => await axiosClient.put(`/question/del
 export const getQuesOfCategory = async (id) => await axiosClient.get(`/question/category/${id}`);
 
 export const searchQues = async (body) => await axiosClient.post('/question/search', body);
+
+export const useFetchQuestions = () => {
+  return useQueryEnhancer({
+    queryKey: [QUERY_KEYS.questions],
+    initialData: [],
+    queryFn: async () => {
+      const data = await getQuestions();
+      return (data || []).map((x) => ({ ...x, isChoose: false }));
+    },
+  });
+};

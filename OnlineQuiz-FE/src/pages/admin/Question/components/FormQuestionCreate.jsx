@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { useEffect, useState } from 'react';
 import { useFieldArray, useForm } from 'react-hook-form';
 import { toast } from 'react-toastify';
-import { createQuestion, getAllCategories } from '~/apis';
+import { createQuestion, getAllCategories, useFetchAllCategories } from '~/apis';
 import Icons from '~/assets/icons';
 import { Button, FormSelect } from '~/components';
 import FormEditor from '~/components/Form/FormEditor';
@@ -33,27 +33,31 @@ export default function FormQuestionCreate({ onClose }) {
     name: 'answers',
   });
 
-  const [categories, setCategories] = useState([]);
+  // const [categories, setCategories] = useState([]);
   const selectedQuestionType = watch('questionType');
 
-  useEffect(() => {
-    (async () => {
-      try {
-        const listCategories = await getAllCategories();
+  const { data: categories } = useFetchAllCategories();
 
-        if (listCategories && listCategories.length > 0) {
-          setCategories(
-            listCategories.map((category) => ({
-              display: category.title,
-              value: category.id,
-            }))
-          );
-        }
-      } catch (error) {
-        toast.error(error.message, { toastId: 'fetch_question' });
-      }
-    })();
-  }, []);
+  console.log(categories, 'categories');
+
+  // useEffect(() => {
+  //   (async () => {
+  //     try {
+  //       const listCategories = await getAllCategories();
+
+  //       if (listCategories && listCategories.length > 0) {
+  //         // setCategories(
+  //         //   listCategories.map((category) => ({
+  //         //     display: category.title,
+  //         //     value: category.id,
+  //         //   }))
+  //         // );
+  //       }
+  //     } catch (error) {
+  //       toast.error(error.message, { toastId: 'fetch_question' });
+  //     }
+  //   })();
+  // }, []);
 
   const handleCreateQuestion = async (data) => {
     try {
