@@ -1,4 +1,4 @@
-import { useQueryEnhancer } from '~/hooks/core/useRequestProcessor';
+import { useMutationEnhancer, useQueryEnhancer } from '~/hooks/core/useRequestProcessor';
 import { axiosClient } from './axiosClient';
 import { QUERY_KEYS } from '~/constants/query';
 
@@ -16,6 +16,13 @@ export const getQuesOfCategory = async (id) => await axiosClient.get(`/question/
 
 export const searchQues = async (body) => await axiosClient.post('/question/search', body);
 
+export const getQuestionsToPDF = async (body) =>
+  await axiosClient.post('api/question/extract/verify', body, {
+    headers: {
+      'Content-Type': 'multipart/form-data',
+    },
+  });
+
 export const useFetchQuestions = () => {
   return useQueryEnhancer({
     queryKey: [QUERY_KEYS.questions],
@@ -25,4 +32,16 @@ export const useFetchQuestions = () => {
       return (data || []).map((x) => ({ ...x, isChoose: false }));
     },
   });
+};
+
+export const useMutationQuestionsToFilePDF = () => {
+  const mutation = useMutationEnhancer({
+    mutationFn: async (params) => {
+      console.log(params);
+      const res = await getQuestionsToPDF(params);
+      return res?.data;
+    },
+  });
+
+  return mutation;
 };

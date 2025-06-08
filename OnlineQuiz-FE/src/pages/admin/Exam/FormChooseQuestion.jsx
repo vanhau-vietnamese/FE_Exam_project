@@ -2,17 +2,20 @@ import { useMemo, useState } from 'react';
 
 import { Backdrop, Button } from '~/components';
 import Question from './Question';
-import { useFetchQuestions } from '~/apis';
+import { useFetchQuestions, useMutationQuestionsToFilePDF } from '~/apis';
 
 import { useFormContext, useWatch } from 'react-hook-form';
 // import { useQuestionStore } from '~/store';
 // import FormQuestionCreate from '../Question/components/FormQuestionCreate';
 
 function ChooseQuestionModal() {
+  const [file, setFile] = useState(null);
   const { data } = useFetchQuestions();
-  console.log(data, 'dataa');
+  const { mutate, data: listQuestionPdf } = useMutationQuestionsToFilePDF();
   const methods = useFormContext();
   const [open, setOpen] = useState(false);
+
+  console.log(listQuestionPdf, 'listQuestionPdf');
 
   // const handleQuestionSelect = (question) => {
   //   if (selectedQuestions && selectedQuestions.includes(question)) {
@@ -26,8 +29,6 @@ function ChooseQuestionModal() {
     control: methods.control,
     name: ['category', 'listChooseQuestion'],
   });
-
-  console.log(category, 'category');
 
   const _data = useMemo(() => {
     const listChooseQuestionMap = new Map(listChooseQuestion.map((item) => [item.id, true]));
@@ -45,6 +46,21 @@ function ChooseQuestionModal() {
     setOpen(false);
   };
 
+  const handleFileChange = async (event) => {
+    const _file = event.target?.files?.[0];
+    setFile(_file);
+    const formData = new FormData();
+    formData.append('file', _file); // key "file" này phải trùng với tên param BE nhận
+
+    try {
+      mutate(formData);
+    } catch (error) {
+      console.error('Upload thất bại', error);
+    }
+  };
+
+  console.log(file?.name, 'shjvhsvhshvsh');
+
   return (
     <>
       <Button
@@ -52,7 +68,7 @@ function ChooseQuestionModal() {
         onClick={() => setOpen(true)}
         className="border border-gray-500 p-2 ml-3 flex text-sm"
       >
-        Chọn câu hỏi1 <p className="text-blue-500 ml-1"> tại đây</p>
+        Chọn câu hỏi <p className="text-blue-500 ml-1"> tại đây</p>
       </Button>
       {open && (
         <Backdrop opacity={0.25}>
@@ -66,6 +82,26 @@ function ChooseQuestionModal() {
           </div>
         </Backdrop>
       )}
+      <Button type="button" className="border border-gray-500 p-2 ml-3 flex text-sm">
+        Chọn từ file{' '}
+        <p className="text-blue-500 ml-1">
+          <label
+            htmlFor="pdf-upload"
+            style={{ cursor: 'pointer', color: 'blue', textDecoration: 'underline' }}
+          >
+            Chọn file PDF
+          </label>
+          <span className="ml-4">{file?.name}</span>
+        </p>
+      </Button>
+
+      <input
+        id="pdf-upload"
+        type="file"
+        accept="application/pdf"
+        onChange={handleFileChange}
+        style={{ display: 'none' }} // ẩn input đi, chỉ còn label click được
+      />
     </>
   );
 }
