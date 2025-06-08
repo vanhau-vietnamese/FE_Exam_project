@@ -82,9 +82,19 @@ export default function Question({ listQuestion, onCancel }) {
         <Button
           className="px-6 py-2 text-sm text-white bg-primary shadow-success hover:shadow-success_hover"
           onClick={() => {
+            const _list = (listQ || []).map((x) => {
+              return {
+                content: x?.content ?? '',
+                questionTypeId: x?.questionType?.alias,
+                categoryId: x?.category?.id,
+                categoryTitle: x?.category?.title,
+                answerRequestList: x?.answers,
+                isChoose: x?.isChoose,
+              };
+            });
             methods.setValue(
               'listChooseQuestion',
-              (listQ || []).filter((x) => x?.isChoose)
+              (_list || []).filter((x) => x?.isChoose)
             );
             onCancel();
           }}

@@ -17,7 +17,7 @@ export const getQuesOfCategory = async (id) => await axiosClient.get(`/question/
 export const searchQues = async (body) => await axiosClient.post('/question/search', body);
 
 export const getQuestionsToPDF = async (body) =>
-  await axiosClient.post('api/question/extract/verify', body, {
+  await axiosClient.post('api/questions/extract/verify', body, {
     headers: {
       'Content-Type': 'multipart/form-data',
     },
@@ -39,7 +39,7 @@ export const useMutationQuestionsToFilePDF = () => {
     mutationFn: async (params) => {
       console.log(params);
       const res = await getQuestionsToPDF(params);
-      return res?.data;
+      return res || [];
     },
   });
 

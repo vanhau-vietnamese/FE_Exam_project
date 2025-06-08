@@ -31,10 +31,15 @@ const FormCreateExam = () => {
   // });
 
   const methods = useResolverForm({
-    schema: yup.object().shape({}),
+    schema: yup.object().shape({
+      examName: yup.string().required(),
+      category: yup.mixed().test('category', 'category is a required field', function (category) {
+        return !!category;
+      }),
+    }),
     configs: {
       values: {
-        examName: 'cscs',
+        examName: '',
         description: '',
         category: '',
         time: '',

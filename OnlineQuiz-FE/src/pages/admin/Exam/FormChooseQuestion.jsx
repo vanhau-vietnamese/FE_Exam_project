@@ -46,6 +46,8 @@ function ChooseQuestionModal() {
     setOpen(false);
   };
 
+  console.log(listChooseQuestion, 'sgvhshvshvh');
+
   const handleFileChange = async (event) => {
     const _file = event.target?.files?.[0];
     setFile(_file);
@@ -53,19 +55,38 @@ function ChooseQuestionModal() {
     formData.append('file', _file); // key "file" này phải trùng với tên param BE nhận
 
     try {
-      mutate(formData);
+      mutate(formData, {
+        onSuccess: (_data) => {
+          const _list = (_data || []).map((x) => {
+            return {
+              answerRequestList: x?.question?.answerRequestList,
+              categoryId: x?.question?.categoryId,
+              categoryTitle: x?.category?.title,
+              content: x?.question?.content,
+              questionTypeId: x?.question?.questionTypeId,
+              reason: x?.reason ?? '',
+              isChoose: !x?.reason,
+            };
+          });
+
+          methods.setValue('listChooseQuestion', [...listChooseQuestion, ..._list]);
+        },
+      });
     } catch (error) {
       console.error('Upload thất bại', error);
     }
   };
 
-  console.log(file?.name, 'shjvhsvhshvsh');
-
   return (
     <>
       <Button
         type="button"
-        onClick={() => setOpen(true)}
+        onClick={async () => {
+          const valid = await methods.trigger();
+          if (valid) {
+            setOpen(true);
+          }
+        }}
         className="border border-gray-500 p-2 ml-3 flex text-sm"
       >
         Chọn câu hỏi <p className="text-blue-500 ml-1"> tại đây</p>

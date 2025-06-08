@@ -91,7 +91,6 @@ export default function DoneCreateExam() {
             marksOfQuestion: q.point || 0,
           })),
         };
-        console.log('body', body);
         const response = await createExam(body);
 
         if (response) {
@@ -135,21 +134,21 @@ export default function DoneCreateExam() {
               <div className="mt-5 grid grid-cols-7 bg-slate-300 text-gray-800 rounded-md justify-between hover:bg-slate-100">
                 <div className="col-span-5  rounded-md px-4 py-3">
                   <div className="grid grid-cols-4">
-                    <div className="col-span-1">Mã câu </div>
+                    <div className="col-span-1">STT</div>
                     <div className="col-span-2">Nội dung </div>
-                    <div className="col-span-1">Phân loại </div>
+                    {/* <div className="col-span-1">Phân loại </div> */}
                   </div>
                 </div>
                 <div className="col-span-2 flex items-center justify-center">Nhập điểm</div>
               </div>
-              {item.listQuestion.map((ques) => (
+              {item.listQuestion.map((ques, index) => (
                 <div key={ques.id} className=" grid grid-cols-7 bg-white hover:bg-slate-100">
                   <div className="col-span-5  rounded-md px-4 py-3">
                     <div className="grid grid-cols-4">
-                      <div className="col-span-1">{ques.id} </div>
+                      <div className="col-span-1">{index} </div>
                       <div className="col-span-2"> {compiledConvert(ques.content)} </div>
 
-                      <div className="col-span-1">{ques.questionType.displayName} </div>
+                      {/* <div className="col-span-1">{ques.questionType.displayName} </div> */}
                     </div>
                   </div>
                   <div className="col-span-2 flex items-center justify-center">
