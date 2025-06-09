@@ -2,7 +2,7 @@ import { useMemo, useState } from 'react';
 
 import { Backdrop, Button } from '~/components';
 import Question from './Question';
-import { useFetchQuestions, useMutationQuestionsToFilePDF } from '~/apis';
+import { useFetchAllCategories, useFetchQuestions, useMutationQuestionsToFilePDF } from '~/apis';
 
 import { useFormContext, useWatch } from 'react-hook-form';
 // import { useQuestionStore } from '~/store';
@@ -11,19 +11,14 @@ import { useFormContext, useWatch } from 'react-hook-form';
 function ChooseQuestionModal() {
   const [file, setFile] = useState(null);
   const { data } = useFetchQuestions();
-  const { mutate, data: listQuestionPdf } = useMutationQuestionsToFilePDF();
+  const { mutate, data: listQuestionPdf, isPending } = useMutationQuestionsToFilePDF();
+  console.log(isPending, 'isPending');
   const methods = useFormContext();
   const [open, setOpen] = useState(false);
 
-  console.log(listQuestionPdf, 'listQuestionPdf');
+  const { data: categories } = useFetchAllCategories();
 
-  // const handleQuestionSelect = (question) => {
-  //   if (selectedQuestions && selectedQuestions.includes(question)) {
-  //     setSelectedQuestions(selectedQuestions.filter((id) => id !== question));
-  //   } else {
-  //     setSelectedQuestions([...selectedQuestions, question]);
-  //   }
-  // };
+  console.log(listQuestionPdf, 'listQuestionPdf');
 
   const [category, listChooseQuestion] = useWatch({
     control: methods.control,
@@ -36,6 +31,7 @@ function ChooseQuestionModal() {
       (item) => ({
         ...item,
         isChoose: listChooseQuestionMap.has(item.id),
+        point: 0,
       })
     );
 
@@ -46,30 +42,43 @@ function ChooseQuestionModal() {
     setOpen(false);
   };
 
-  console.log(listChooseQuestion, 'sgvhshvshvh');
+  const _category = categories.find((o) => o?.value?.toString() === category);
 
   const handleFileChange = async (event) => {
+    const valid = await methods.trigger();
+
+    if (!valid) {
+      event.target.value = '';
+      return;
+    }
     const _file = event.target?.files?.[0];
     setFile(_file);
     const formData = new FormData();
     formData.append('file', _file); // key "file" này phải trùng với tên param BE nhận
 
+    event.target.value = '';
+    const _listChooseQuestion = listChooseQuestion?.filter((x) => {
+      return !x?.isVerify;
+    });
+
     try {
       mutate(formData, {
-        onSuccess: (_data) => {
-          const _list = (_data || []).map((x) => {
+        onSuccess: (_data1) => {
+          const _list = (_data1 || []).map((x) => {
             return {
               answerRequestList: x?.question?.answerRequestList,
               categoryId: x?.question?.categoryId,
-              categoryTitle: x?.category?.title,
+              categoryTitle: _category?.display,
               content: x?.question?.content,
               questionTypeId: x?.question?.questionTypeId,
               reason: x?.reason ?? '',
               isChoose: !x?.reason,
+              marksOfQuestion: 0,
+              isVerify: true,
             };
           });
 
-          methods.setValue('listChooseQuestion', [...listChooseQuestion, ..._list]);
+          methods.setValue('listChooseQuestion', [..._listChooseQuestion, ..._list]);
         },
       });
     } catch (error) {
@@ -103,7 +112,11 @@ function ChooseQuestionModal() {
           </div>
         </Backdrop>
       )}
-      <Button type="button" className="border border-gray-500 p-2 ml-3 flex text-sm">
+      <Button
+        disable={isPending}
+        type="button"
+        className="border border-gray-500 p-2 ml-3 flex text-sm"
+      >
         Chọn từ file{' '}
         <p className="text-blue-500 ml-1">
           <label
@@ -121,6 +134,7 @@ function ChooseQuestionModal() {
         type="file"
         accept="application/pdf"
         onChange={handleFileChange}
+        disabled={isPending}
         style={{ display: 'none' }} // ẩn input đi, chỉ còn label click được
       />
     </>

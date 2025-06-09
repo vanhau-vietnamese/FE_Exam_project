@@ -91,7 +91,7 @@ export default function FormUpdateExam() {
       setQuesOfQuiz(updatedQuestions);
       console.log('Updated quesOfQuiz:', updatedQuestions);
     }
-  }, [selectedQuestions, listPoint]);
+  }, [selectedQuestions, listPoint, isQuestionsSelected, containerQues, quesOfQuiz]);
 
   const handleQuestionSelect = (questionID) => {
     setIsQuestionsSelected(true);
@@ -123,8 +123,8 @@ export default function FormUpdateExam() {
   };
 
   const handlePointsChange = (id, e) => {
-    const point = Number(e.target.value);
-    if (Number.isInteger(point) && point > 0 && point < 11) {
+    const marksOfQuestion = Number(e.target.value);
+    if (Number.isInteger(marksOfQuestion) && marksOfQuestion > 0 && marksOfQuestion < 11) {
       const foundQuestionIdx = quesOfQuiz.findIndex((el) => el.id === id);
 
       setQuesOfQuiz((prev) =>
@@ -134,7 +134,7 @@ export default function FormUpdateExam() {
                 ...item,
                 additionalFields: {
                   ...item.additionalFields,
-                  marksOfQuestion: point,
+                  marksOfQuestion: marksOfQuestion,
                 },
               }
             : item

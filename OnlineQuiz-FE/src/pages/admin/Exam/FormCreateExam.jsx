@@ -3,7 +3,7 @@ import { Controller, FormProvider, useWatch } from 'react-hook-form';
 import { Button, FormInput, FormSelect } from '~/components';
 // import { useEffect } from 'react';
 import { toast } from 'react-toastify';
-import { useFetchAllCategories } from '~/apis';
+import { useFetchAllCategories, useMutationQuestionsToFilePDF } from '~/apis';
 // import { useQuestionStore } from '~/store';
 
 import { Link } from 'react-router-dom';
@@ -19,8 +19,9 @@ const FormCreateExam = () => {
 
   const { data: categories } = useFetchAllCategories();
 
-  console.log(categories, 'categories1');
+  const { isPending } = useMutationQuestionsToFilePDF();
 
+  console.log(isPending, 'isPending1');
   // const { questionList, setQuestionList } = useQuestionStore((state) => state);
   // const {
   //   control,
@@ -35,6 +36,9 @@ const FormCreateExam = () => {
       examName: yup.string().required(),
       category: yup.mixed().test('category', 'category is a required field', function (category) {
         return !!category;
+      }),
+      time: yup.number().transform((value, originValue) => {
+        return originValue === '' ? null : value;
       }),
     }),
     configs: {
@@ -67,12 +71,12 @@ const FormCreateExam = () => {
 
   const handleFormSubmit = async (data) => {
     try {
-      // if (selectedQuestions.length === 0) {
-      //   toast.error('Bạn cần chọn ít nhất 1 câu hỏi cho bài tập', {
-      //     toastId: 'ít_nhất_một_câu_hỏi',
-      //   });
-      //   return;
-      // }
+      if (listChooseQuestion.length === 0) {
+        toast.error('Bạn cần chọn ít nhất 1 câu hỏi cho bài tập', {
+          toastId: 'ít_nhất_một_câu_hỏi',
+        });
+        return;
+      }
       const body = {
         title: data.examName,
         categoryId: data.category,
@@ -136,14 +140,8 @@ const FormCreateExam = () => {
                     key={`description`}
                     name={`description`}
                     control={methods.control}
-                    render={({ field, fieldState: { error } }) => (
-                      <FormInput
-                        {...field}
-                        title="Mô tả"
-                        placeholder="Nhập mô tả bài tập"
-                        error={error?.message}
-                        required
-                      />
+                    render={({ field }) => (
+                      <FormInput {...field} title="Mô tả" placeholder="Nhập mô tả bài tập" />
                     )}
                   />
                 </div>
@@ -161,7 +159,6 @@ const FormCreateExam = () => {
                         required
                         error={error?.message}
                         options={categories}
-                        // onChange={handleCategoryForFilter}
                       />
                     )}
                   />
@@ -187,17 +184,6 @@ const FormCreateExam = () => {
                       />
                     )}
                   />
-                  {/* <FormInput
-                    min="5"
-                    max="180"
-                    control={control}
-                    name="time"
-                    type="number"
-                    title="Thời gian làm bài cho bài tập"
-                    placeholder="Nhập thời gian làm bài"
-                    onChange={(e) => handleInputTime(e)}
-                    required
-                  /> */}
                 </div>
               </div>
 
@@ -210,6 +196,7 @@ const FormCreateExam = () => {
 
             <div className="flex justify-center">
               <Button
+                disable={isPending}
                 type="submit"
                 className="px-6 py-2 text-sm text-white bg-primary shadow-success hover:shadow-success_hover"
               >

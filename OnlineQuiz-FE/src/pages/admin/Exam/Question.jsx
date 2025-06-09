@@ -90,6 +90,7 @@ export default function Question({ listQuestion, onCancel }) {
                 categoryTitle: x?.category?.title,
                 answerRequestList: x?.answers,
                 isChoose: x?.isChoose,
+                marksOfQuestion: 0,
               };
             });
             methods.setValue(
