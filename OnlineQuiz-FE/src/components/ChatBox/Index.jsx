@@ -25,7 +25,7 @@ const ChatBox = ({ onClose }) => {
   const { mutate } = useMutationSendMessage();
 
   const handleSend = () => {
-    if (input.trim() === '') return;
+    if (input?.trim() === '') return;
 
     setCurrentMessage(input.trim());
     mutate(
@@ -56,7 +56,7 @@ const ChatBox = ({ onClose }) => {
 
       {/* Messages */}
       <div className="flex-1 p-3 overflow-y-auto space-y-2">
-        {dataHistoryChat.map((msg, index) => (
+        {dataHistoryChat?.map((msg, index) => (
           <div
             key={index}
             className={`p-2 rounded-lg max-w-xs ${
@@ -87,7 +87,7 @@ const ChatBox = ({ onClose }) => {
         <input
           type="text"
           value={input}
-          onChange={(e) => setInput(e.target.value)}
+          onChange={(e) => setInput(e?.target?.value)}
           className="flex-1 border rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-orange-400"
           placeholder="Nhập tin nhắn..."
           onKeyDown={(e) => {
