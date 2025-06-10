@@ -29,6 +29,7 @@ import Squared from './Squared';
 import X from './X';
 import Person from './Person';
 import Funnel from './Funnel';
+import Chat from './Chat';
 
 export default {
   Squared,
@@ -62,4 +63,5 @@ export default {
   LogOut,
   DownArrow,
   Menu,
+  Chat,
 };

@@ -8,6 +8,7 @@ import 'react-toastify/dist/ReactToastify.css';
 import './index.scss';
 import { AppProvider } from './useContext/AppContext';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import ChatWidget from './components/ChatBox/Index';
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -34,6 +35,7 @@ ReactDOM.createRoot(document.getElementById('root')).render(
   <QueryClientProvider client={queryClient}>
     <AppProvider>
       <React.Fragment>
+        <ChatWidget />
         <RouterProvider router={routes} />
         <ToastContainer
           position="top-center"
