@@ -5,6 +5,7 @@ const router = {
   student: '/student',
   excises: '/student/excises',
   history: '/student/history',
+  historyDetail: '/student/historyDetail',
   startQuiz: '/student/startQuiz',
   admin: '/admin',
   studentList: '/admin/students',

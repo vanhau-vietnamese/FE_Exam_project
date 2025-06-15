@@ -5,7 +5,7 @@ import { CheckPractice, DoneCreateExam, FormCreateExam } from '~/pages/admin/Exa
 import ExamWrapper from '~/pages/admin/Exam/ExamWrapper';
 import { Overview, QuestionWarehouse, Category, Teachers, Trainees } from '~/pages/admin';
 import { SignInPage, SignUpPage } from '~/pages/auth';
-import { ShowHistory, StartPractice, StudentExcises } from '~/pages/student';
+import { ShowHistory, StartPractice, StudentExcises, ShowDetailHistory } from '~/pages/student';
 
 import router from './const';
 import UserInfo from '~/pages/user/account/UserInfo';
@@ -103,6 +103,10 @@ const routes = createBrowserRouter([
               {
                 index: true,
                 element: <ShowHistory />,
+              },
+              {
+                path: 'detail/:id',
+                element: <ShowDetailHistory />,
               },
               {
                 path: 'startQuiz/:id',

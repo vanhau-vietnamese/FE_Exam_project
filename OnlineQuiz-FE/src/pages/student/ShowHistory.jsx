@@ -1,31 +1,19 @@
 import moment from 'moment';
-import { useState } from 'react';
-import { useEffect } from 'react';
-import { Link } from 'react-router-dom';
+import { useCallback, useState } from 'react';
+
+import { Link, useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
-import { deleteHistory, getHistory, searchHistory } from '~/apis';
+import { deleteHistory, useFetchSearchHistory } from '~/apis';
 import Icons from '~/assets/icons';
 import { Button, Input } from '~/components';
 import { useDebounce } from '~/hooks';
 
 export default function ShowHistory() {
+  const navigate = useNavigate();
   const [searchKeywords, setSearchKeywords] = useState('');
-  const [history, setHistory] = useState([]);
   const debounceQuery = useDebounce(searchKeywords, 200);
 
-  useEffect(() => {
-    (async () => {
-      const listHistory = await getHistory();
-      setHistory(listHistory);
-    })();
-  }, []);
-
-  useEffect(() => {
-    (async () => {
-      const searchValue = await searchHistory({ searchContent: debounceQuery });
-      setHistory(searchValue || []);
-    })();
-  }, [debounceQuery, history]);
+  const { data: dataHistory = [] } = useFetchSearchHistory(debounceQuery);
 
   const handleInputChange = (e) => {
     setSearchKeywords(e.target.value);
@@ -41,6 +29,13 @@ export default function ShowHistory() {
     }
   };
 
+  const handleDetail = useCallback(
+    (id) => {
+      navigate(`./detail/${id}`);
+    },
+    [navigate]
+  );
+
   return (
     <div className="w-full">
       <div className="w-[500px] mb-5">
@@ -51,13 +46,13 @@ export default function ShowHistory() {
           onChange={handleInputChange}
         />
       </div>
-      {history.length === 0 ? (
+      {dataHistory.length === 0 ? (
         <div className=" bg-slate-50 rounded-sm h-[100%]">
           <div className="font-bold text-lg text-center pt-10"> Không có dữ liệu!</div>
         </div>
       ) : (
         <>
-          {history.map((item) => (
+          {dataHistory.map((item) => (
             <div
               key={item.id}
               className="text-sm container mx-auto p-2 bg-slate-50 shadow-md rounded-md w-full mb-3 hover:scale-105 transition-transform duration-300"
@@ -78,6 +73,14 @@ export default function ShowHistory() {
                       <div>Tổng thời gian: {item.durationTime} </div>
                       <div>Số câu đúng: {item.numberOfCorrect} câu</div>
                       <div>Số câu sai: {item.numberOfIncorrect} câu</div>
+                      <div
+                        onClick={() => {
+                          handleDetail(item.id);
+                        }}
+                        className="text-blue-500 cursor-pointer"
+                      >
+                        Xem chi tiết
+                      </div>
                     </div>
                   </div>
                   <div className="w-[25%] border-2 rounded-md p-3 right-0">
