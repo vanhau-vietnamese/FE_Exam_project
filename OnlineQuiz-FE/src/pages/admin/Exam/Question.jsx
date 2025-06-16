@@ -5,6 +5,7 @@ import { useFormContext, useWatch } from 'react-hook-form';
 import { useState } from 'react';
 import { Button } from '~/components';
 export default function Question({ listQuestion, onCancel }) {
+  console.log(listQuestion, 'vsvsvsvs');
   const [listQ, setListQ] = useState(listQuestion || []);
   const compiledConvert = compile({
     limits: {
@@ -14,12 +15,12 @@ export default function Question({ listQuestion, onCancel }) {
 
   const methods = useFormContext();
 
-  const [listChooseQuestion, examName] = useWatch({
+  const [listChooseQuestion] = useWatch({
     control: methods.control,
     name: ['listChooseQuestion', 'examName'],
   });
 
-  console.log(listChooseQuestion, examName, 'listChooseQuestion');
+  console.log(listChooseQuestion, 'listChooseQuestion');
 
   const handleSelect = (_item, index) => {
     const _listQ = [...listQ];
@@ -82,21 +83,24 @@ export default function Question({ listQuestion, onCancel }) {
         <Button
           className="px-6 py-2 text-sm text-white bg-primary shadow-success hover:shadow-success_hover"
           onClick={() => {
-            const _list = (listQ || []).map((x) => {
-              return {
-                content: x?.content ?? '',
-                questionTypeId: x?.questionType?.alias,
-                categoryId: x?.category?.id,
-                categoryTitle: x?.category?.title,
-                answerRequestList: x?.answers,
-                isChoose: x?.isChoose,
-                marksOfQuestion: 0,
-              };
-            });
-            methods.setValue(
-              'listChooseQuestion',
-              (_list || []).filter((x) => x?.isChoose)
-            );
+            const _list = (listQ || [])
+              .map((x) => {
+                return {
+                  id: x?.id,
+                  content: x?.content ?? '',
+                  questionTypeId: x?.questionType?.alias,
+                  categoryId: x?.category?.id,
+                  categoryTitle: x?.category?.title,
+                  answerRequestList: x?.answers,
+                  isChoose: x?.isChoose,
+                  marksOfQuestion: 0,
+                };
+              })
+              .filter((x) => x?.isChoose);
+
+            const _listChooseQuestion = listChooseQuestion.filter((x) => !x?.id);
+
+            methods.setValue('listChooseQuestion', [..._list, ..._listChooseQuestion]);
             onCancel();
           }}
         >

@@ -1,6 +1,6 @@
 import { useMemo, useState } from 'react';
 
-import { Backdrop, Button } from '~/components';
+import { Backdrop, Button, Loading } from '~/components';
 import Question from './Question';
 import { useFetchAllCategories, useFetchQuestions, useMutationQuestionsToFilePDF } from '~/apis';
 
@@ -26,7 +26,7 @@ function ChooseQuestionModal() {
   });
 
   const _data = useMemo(() => {
-    const listChooseQuestionMap = new Map(listChooseQuestion.map((item) => [item.id, true]));
+    const listChooseQuestionMap = new Map(listChooseQuestion.map((item) => [item?.id, true]));
     const merged = (category ? data.filter((q) => q.category.id === parseInt(category)) : data).map(
       (item) => ({
         ...item,
@@ -88,6 +88,18 @@ function ChooseQuestionModal() {
 
   return (
     <>
+      {isPending && (
+        <Backdrop opacity={0}>
+          <div className="flex flex-col items-center justify-center w-full h-full">
+            <Loading />
+            <h4 className="font-semibold text-center text-icon mt-4">
+              Hệ thống đang xử lý,{' '}
+              <span className="font-semibold text-icon">Xin vui lòng chờ trong giây lát!</span>
+            </h4>
+          </div>
+        </Backdrop>
+      )}
+
       <Button
         type="button"
         onClick={async () => {
@@ -100,6 +112,7 @@ function ChooseQuestionModal() {
       >
         Chọn câu hỏi <p className="text-blue-500 ml-1"> tại đây</p>
       </Button>
+
       {open && (
         <Backdrop opacity={0.25}>
           <div className="h-full mx-auto container  max-w-5xl p-10 animate-fade-down animate-duration-500">
