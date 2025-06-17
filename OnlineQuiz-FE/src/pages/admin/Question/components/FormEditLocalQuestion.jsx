@@ -13,13 +13,10 @@ import { useCallback } from 'react';
 
 // eslint-disable-next-line react/prop-types
 export default function FormEditLocalQuestion({ dataEdit, setDataEdit, cbFn }) {
-  console.log(dataEdit, 'dataEdit');
   const {
     control,
     formState: { errors },
     getValues,
-    handleSubmit,
-    setValue,
   } = useForm({
     mode: 'onSubmit',
     resolver: zodResolver(FormQuestionCreateSchema),
@@ -29,7 +26,7 @@ export default function FormEditLocalQuestion({ dataEdit, setDataEdit, cbFn }) {
       content: dataEdit?.item?.content,
       answers: (dataEdit?.item?.answerRequestList || [])?.map((item) => ({
         content: item.content,
-        isCorrect: Boolean(item.isCorrect),
+        isCorrect: Boolean(item.correct),
       })),
     },
   });
@@ -56,7 +53,12 @@ export default function FormEditLocalQuestion({ dataEdit, setDataEdit, cbFn }) {
     const _params = getValues();
     const _data = {
       ...dataEdit?.item,
-      answerRequestList: _params?.answers,
+      answerRequestList: _params?.answers?.map((x) => {
+        return {
+          ...x,
+          correct: x?.isCorrect,
+        };
+      }),
       content: _params?.content,
     };
     cbFn(_data, dataEdit?.index);

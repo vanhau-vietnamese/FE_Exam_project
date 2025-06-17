@@ -66,16 +66,14 @@ const ListChooseQuestion = () => {
                       </td>
                       <td className="p-3 flex-shrink-0 w-[40%]">{item?.reason ?? ''}</td>
                       <td className="p-3 flex-shrink-0 w-[5%]">
-                        {!item?.isChoose && (
-                          <Button
-                            onClick={() => {
-                              setDataEdit({ item, index });
-                            }}
-                            className="text-xs rounded px-2 py-1 text-blue-500 hover:bg-blue-200 hover:bg-opacity-40"
-                          >
-                            <Icons.Pencil />
-                          </Button>
-                        )}
+                        <Button
+                          onClick={() => {
+                            setDataEdit({ item, index });
+                          }}
+                          className="text-xs rounded px-2 py-1 text-blue-500 hover:bg-blue-200 hover:bg-opacity-40"
+                        >
+                          <Icons.Pencil />
+                        </Button>
                       </td>
                     </tr>
                   );
