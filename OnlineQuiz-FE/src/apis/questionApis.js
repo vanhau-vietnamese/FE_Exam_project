@@ -23,6 +23,13 @@ export const getQuestionsToPDF = async (body) =>
     },
   });
 
+export const getQuestionsGenerate = async (body) =>
+  await axiosClient.post('api/questions/generate?number=3', body, {
+    headers: {
+      'Content-Type': 'multipart/form-data',
+    },
+  });
+
 export const useFetchQuestions = () => {
   return useQueryEnhancer({
     queryKey: [QUERY_KEYS.questions],
@@ -39,6 +46,17 @@ export const useMutationQuestionsToFilePDF = () => {
     mutationFn: async (params) => {
       console.log(params);
       const res = await getQuestionsToPDF(params);
+      return res || [];
+    },
+  });
+
+  return mutation;
+};
+
+export const useMutationQuestionsGenerate = () => {
+  const mutation = useMutationEnhancer({
+    mutationFn: async (params) => {
+      const res = await getQuestionsGenerate(params);
       return res || [];
     },
   });

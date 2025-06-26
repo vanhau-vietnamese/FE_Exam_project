@@ -187,7 +187,7 @@ const FormCreateExam = () => {
                 </div>
               </div>
 
-              <div className="flex">
+              <div className="flex w-full">
                 <ChooseQuestionModal />
               </div>
             </div>
