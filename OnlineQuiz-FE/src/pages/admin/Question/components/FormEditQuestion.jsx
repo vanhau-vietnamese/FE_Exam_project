@@ -107,7 +107,7 @@ export default function EditQuestion() {
         onSubmit={handleSubmit(handleEditQuestion)}
       >
         <div className="text-gray-700 p-4 border-b border-dashed border-strike">
-          <h3>Chỉnh sửa câu hỏi1</h3>
+          <h3>Chỉnh sửa câu hỏi</h3>
         </div>
         <div className="flex-1 max-h-[700px] overflow-y-auto p-4">
           <div className="flex items-center justify-between w-full gap-x-5 mb-5">

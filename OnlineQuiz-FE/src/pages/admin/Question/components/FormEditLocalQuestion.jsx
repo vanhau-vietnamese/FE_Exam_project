@@ -75,17 +75,17 @@ export default function FormEditLocalQuestion({ dataEdit, setDataEdit, cbFn }) {
         // })}
       >
         <div className="text-gray-700 p-4 border-b border-dashed border-strike">
-          <h3>Chỉnh sửa câu hỏi2</h3>
+          <h3>Chỉnh sửa câu hỏi</h3>
         </div>
         <div className="p-4 flex">
-          <div>
+          <div className="min-w-[160px]">
             <h3 className="text-gray-700">Lí do không hợp lệ: </h3>
           </div>
           <div className="">{dataEdit?.item?.reason}</div>
         </div>
 
         <div className="p-4 flex">
-          <div>
+          <div className="min-w-[160px]">
             <h3 className="text-gray-700">Gợi ý chỉnh sửa: </h3>
           </div>
           <div className="">{dataEdit?.item?.suggestion}</div>

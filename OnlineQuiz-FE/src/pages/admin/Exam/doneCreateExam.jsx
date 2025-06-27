@@ -172,7 +172,7 @@ export default function DoneCreateExam() {
               'shadow-success hover:shadow-success_hover': _enterPointForAllQues,
             })}
           >
-            Tạo bài tập1
+            Tạo bài tập
           </Button>
 
           <Link
