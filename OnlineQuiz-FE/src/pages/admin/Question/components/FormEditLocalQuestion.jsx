@@ -13,6 +13,7 @@ import { useCallback } from 'react';
 
 // eslint-disable-next-line react/prop-types
 export default function FormEditLocalQuestion({ dataEdit, setDataEdit, cbFn }) {
+  console.log(dataEdit, 'dataEdit');
   const {
     control,
     formState: { errors },
@@ -68,14 +69,28 @@ export default function FormEditLocalQuestion({ dataEdit, setDataEdit, cbFn }) {
   return (
     <div className="w-full h-full mx-auto max-w-5xl p-10 animate-fade-down animate-duration-500">
       <form
-        className="w-full h-full bg-white rounded-lg flex flex-col justify-between"
+        className="w-full h-full bg-white rounded-lg flex flex-col"
         // onSubmit={handleSubmit((_params) => {
         //   console.log(_params, 'shvhsvshv');
         // })}
       >
         <div className="text-gray-700 p-4 border-b border-dashed border-strike">
-          <h3>Chỉnh sửa câu hỏi</h3>
+          <h3>Chỉnh sửa câu hỏi2</h3>
         </div>
+        <div className="p-4 flex">
+          <div>
+            <h3 className="text-gray-700">Lí do không hợp lệ: </h3>
+          </div>
+          <div className="">{dataEdit?.item?.reason}</div>
+        </div>
+
+        <div className="p-4 flex">
+          <div>
+            <h3 className="text-gray-700">Gợi ý chỉnh sửa: </h3>
+          </div>
+          <div className="">{dataEdit?.item?.suggestion}</div>
+        </div>
+
         <div className="flex-1 max-h-[700px] overflow-y-auto p-4">
           <FormEditor
             control={control}

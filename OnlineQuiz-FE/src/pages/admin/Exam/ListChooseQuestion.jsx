@@ -62,7 +62,7 @@ const ListChooseQuestion = () => {
                   return (
                     <tr
                       key={item.id}
-                      className="flex bg-slate-50 items-center border-b border-[#d1d2de] hover:bg-slate-100 h-[45px] font-semibold text-[#3b3e66]"
+                      className="flex bg-slate-50 items-center border-b border-[#d1d2de] hover:bg-slate-100 min-h-[60px] font-semibold text-[#3b3e66]"
                     >
                       <td className="p-3 flex flex-auto w-[40%]">
                         {index + 1}.{compiledConvert(item?.content)}
