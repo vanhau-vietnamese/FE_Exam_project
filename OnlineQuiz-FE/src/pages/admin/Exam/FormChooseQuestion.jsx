@@ -1,6 +1,6 @@
 import { useCallback, useMemo, useState } from 'react';
 
-import { Backdrop, Button, FormInput, Loading } from '~/components';
+import { Backdrop, Button, Loading } from '~/components';
 import Question from './Question';
 import {
   useFetchAllCategories,
@@ -18,12 +18,8 @@ function ChooseQuestionModal() {
   const [file, setFile] = useState(null);
   const [fileGenerate, setFileGenerate] = useState(null);
   const { data } = useFetchQuestions();
-  const { mutate, data: listQuestionPdf, isPending } = useMutationQuestionsToFilePDF();
-  const {
-    mutate: mutateGenerate,
-    data: listQuestionGenerate,
-    isPending: isPendingGenerate,
-  } = useMutationQuestionsGenerate();
+  const { mutate, isPending } = useMutationQuestionsToFilePDF();
+  const { mutate: mutateGenerate, isPending: isPendingGenerate } = useMutationQuestionsGenerate();
   const methods = useFormContext();
   const [open, setOpen] = useState(false);
 
@@ -34,8 +30,6 @@ function ChooseQuestionModal() {
   });
 
   const { data: categories } = useFetchAllCategories();
-
-  console.log(listQuestionPdf, 'listQuestionPdf');
 
   const [category, listChooseQuestion] = useWatch({
     control: methods.control,
@@ -109,32 +103,70 @@ function ChooseQuestionModal() {
     event.target.value = '';
   }, []);
 
-  const handleGenerateFile = useCallback(() => {
+  const handleGenerateFile = useCallback(async () => {
+    const valid = await methods.trigger();
+
+    if (!valid) {
+      return;
+    }
+
     const formData = new FormData();
     formData.append('file', fileGenerate);
-    // formData.append('number', paramsCreatedRequest.numberQuestion);
-    // formData.append('message', paramsCreatedRequest.infoTopic);
+    formData.append('number', paramsCreatedRequest.numberQuestion);
+    formData.append('message', paramsCreatedRequest.infoTopic);
+
     try {
-      mutateGenerate(formData);
+      mutateGenerate(formData, {
+        onSuccess: (_dataGen) => {
+          const _list = (_dataGen || []).map((x) => {
+            return {
+              answerRequestList: x?.question?.answerRequestList,
+              categoryId: x?.question?.categoryId,
+              categoryTitle: _category?.display,
+              content: x?.question?.content,
+              questionTypeId: x?.question?.questionTypeId,
+              reason: x?.reason ?? '',
+              isChoose: !x?.reason,
+              marksOfQuestion: 0,
+              isGen: true,
+            };
+          });
+
+          const _listChooseQuestion = listChooseQuestion?.filter((x) => {
+            return !x?.isGen;
+          });
+
+          console.log(_list, '_list_gen');
+
+          methods.setValue('listChooseQuestion', [..._listChooseQuestion, ..._list]);
+        },
+      });
     } catch (err) {
       console.log(err);
     }
-  }, [fileGenerate, mutateGenerate]);
+  }, [
+    _category?.display,
+    fileGenerate,
+    listChooseQuestion,
+    methods,
+    mutateGenerate,
+    paramsCreatedRequest.infoTopic,
+    paramsCreatedRequest.numberQuestion,
+  ]);
 
   return (
     <>
-      {isPending ||
-        (isPendingGenerate && (
-          <Backdrop opacity={0}>
-            <div className="flex flex-col items-center justify-center w-full h-full">
-              <Loading />
-              <h4 className="font-semibold text-center text-icon mt-4">
-                Hệ thống đang xử lý,{' '}
-                <span className="font-semibold text-icon">Xin vui lòng chờ trong giây lát!</span>
-              </h4>
-            </div>
-          </Backdrop>
-        ))}
+      {(isPending || isPendingGenerate) && (
+        <Backdrop opacity={0}>
+          <div className="flex flex-col items-center justify-center w-full h-full">
+            <Loading />
+            <h4 className="font-semibold text-center text-icon mt-4">
+              Hệ thống đang xử lý,{' '}
+              <span className="font-semibold text-icon">Xin vui lòng chờ trong giây lát!</span>
+            </h4>
+          </div>
+        </Backdrop>
+      )}
 
       <Button
         type="button"
@@ -249,7 +281,7 @@ function ChooseQuestionModal() {
                 >
                   Chọn file PDF
                 </label>
-                <span className="ml-4">{file?.name}</span>
+                <span className="ml-4">{fileGenerate?.name}</span>
               </p>
             </Button>
 
@@ -267,6 +299,7 @@ function ChooseQuestionModal() {
               type="button"
               className="px-6 py-2 text-sm text-white bg-primary shadow-success hover:shadow-success_hover"
               onClick={handleGenerateFile}
+              disable={isPendingGenerate}
             >
               Tạo câu hỏi
             </Button>

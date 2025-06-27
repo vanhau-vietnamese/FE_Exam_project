@@ -31,6 +31,17 @@ const ListChooseQuestion = () => {
     [listChooseQuestion, methods]
   );
 
+  const handleDeleteRecord = useCallback(
+    ({ item, index }) => {
+      const _listChooseQuestion = (listChooseQuestion || []).filter((_item, index2) => {
+        return index !== index2;
+      });
+
+      methods.setValue('listChooseQuestion', [..._listChooseQuestion]);
+    },
+    [listChooseQuestion, methods]
+  );
+
   return (
     <>
       <div className="bg-gray-400 w-full rounded-md mb-5">
@@ -42,8 +53,8 @@ const ListChooseQuestion = () => {
                   <th className="p-3 flex-auto w-[40%]">Nội dung câu hỏi</th>
                   <th className="p-3 flex-auto w-[10%]">Danh mục</th>
                   <th className="p-3 flex-auto w-[5%]"></th>
-                  <th className="p-3 flex-auto w-[40%]">Lí do không hợp lệ</th>
-                  <th className="p-3 flex-auto w-[5%]">Chỉnh sửa</th>
+                  <th className="p-3 flex-auto w-[35%]">Lí do không hợp lệ</th>
+                  <th className="p-3 flex-auto w-[10%]">Chỉnh sửa</th>
                 </tr>
               </thead>
               <tbody className="overflow-y-auto block w-full">
@@ -64,8 +75,8 @@ const ListChooseQuestion = () => {
                           </div>
                         )}
                       </td>
-                      <td className="p-3 flex-shrink-0 w-[40%]">{item?.reason ?? ''}</td>
-                      <td className="p-3 flex-shrink-0 w-[5%]">
+                      <td className="p-3 flex-shrink-0 w-[35%]">{item?.reason ?? ''}</td>
+                      <td className="p-3 flex-shrink-0 w-[10%]">
                         <Button
                           onClick={() => {
                             setDataEdit({ item, index });
@@ -73,6 +84,15 @@ const ListChooseQuestion = () => {
                           className="text-xs rounded px-2 py-1 text-blue-500 hover:bg-blue-200 hover:bg-opacity-40"
                         >
                           <Icons.Pencil />
+                        </Button>
+
+                        <Button
+                          onClick={() => {
+                            handleDeleteRecord({ item, index });
+                          }}
+                          className="text-xs rounded px-2 py-1 text-danger hover:bg-blue-200 hover:bg-opacity-40"
+                        >
+                          <Icons.Trash />
                         </Button>
                       </td>
                     </tr>

@@ -24,7 +24,7 @@ export const getQuestionsToPDF = async (body) =>
   });
 
 export const getQuestionsGenerate = async (body) =>
-  await axiosClient.post('api/questions/generate?number=3', body, {
+  await axiosClient.post('api/questions/generate', body, {
     headers: {
       'Content-Type': 'multipart/form-data',
     },

@@ -84,7 +84,7 @@ export default function DoneCreateExam() {
         const body = {
           title: newDataExam.title,
           maxMarks: _totalPoints,
-          categoryId: newDataExam.categoryId,
+          categoryId: Number(newDataExam.categoryId),
           description: newDataExam.description,
           durationMinutes: newDataExam.durationMinutes,
           questions: newDataExam?.listQuestion,
@@ -172,7 +172,7 @@ export default function DoneCreateExam() {
               'shadow-success hover:shadow-success_hover': _enterPointForAllQues,
             })}
           >
-            Tạo bài tập
+            Tạo bài tập1
           </Button>
 
           <Link
