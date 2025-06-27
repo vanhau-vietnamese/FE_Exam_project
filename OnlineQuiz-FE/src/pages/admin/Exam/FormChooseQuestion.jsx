@@ -120,7 +120,9 @@ function ChooseQuestionModal() {
         onSuccess: (_dataGen) => {
           const _list = (_dataGen || []).map((x) => {
             return {
-              answerRequestList: x?.question?.answerRequestList,
+              answerRequestList: (x?.question?.answerRequestList || []).map((o) => {
+                return { ...o, media: null };
+              }),
               categoryId: x?.question?.categoryId,
               categoryTitle: _category?.display,
               content: x?.question?.content,
